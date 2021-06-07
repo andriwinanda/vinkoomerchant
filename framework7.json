@@ -1,0 +1,26 @@
+{
+  "cwd": "C:\\Users\\Delica\\Documents\\ANDRI\\Vinkoo\\Vinkoo Merchant",
+  "type": [
+    "pwa"
+  ],
+  "name": "Vinkoo Merchant",
+  "framework": "vue",
+  "template": "single-view",
+  "bundler": "webpack",
+  "cssPreProcessor": "scss",
+  "theming": {
+    "customColor": true,
+    "color": "#000000",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": true
+  },
+  "customBuild": false,
+  "webpack": {
+    "developmentSourceMap": false,
+    "productionSourceMap": false,
+    "hashAssets": false,
+    "preserveAssetsPaths": false,
+    "inlineAssets": true
+  }
+}
