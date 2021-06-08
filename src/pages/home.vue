@@ -19,7 +19,7 @@
           <small>Booth <strong>10</strong></small>
         </f7-col>
         <f7-col width="20" class="text-align-right">
-          <f7-link icon-f7="qrcode"></f7-link>
+          <f7-link sheet-open=".qrCode" icon-f7="qrcode"></f7-link>
         </f7-col>
       </f7-row>
     </f7-block>
@@ -35,7 +35,7 @@
       </f7-row>
     </f7-card>
     <f7-block class="margin-vertical">
-      <f7-row>
+      <f7-row class="padding-vertical">
         <f7-col
           class="text-align-center bg-color-white padding"
           style="border-radius: 20px"
@@ -73,7 +73,7 @@
           <small class="text-color-primary">Transaction</small>
         </f7-col>
       </f7-row>
-      <f7-row>
+      <f7-row class="padding-bottom">
         <f7-col
           class="text-align-center bg-color-white padding"
           style="border-radius: 20px"
@@ -103,7 +103,7 @@
           style="border-radius: 20px"
         >
           <f7-link
-            href="/contact"
+            login-screen-open="#my-login-screen"
             icon-f7="square_arrow_left"
             icon-size="50"
           ></f7-link>

@@ -10,12 +10,25 @@
   --f7-theme-color-bg-color: #E3B947;
 }
 .title{
-  font-size: 14pt;
+  font-size: 16pt;
 }
 .saldo{
   font-size: 18pt;
 }
-
+.sheet-modal{
+  border-radius: 15px 15px 0 0;
+  &:after {
+    position: absolute;
+    content: "";
+    border-radius: 25px;
+    height: 4px;
+    background-color: #c4c4c4;
+    width: 70px;
+    margin: 0 auto;
+    margin: auto;
+    top: 15px; left: 0; right: 0;
+  }
+}
 /* Invert navigation bars to fill style */
 :root,
 :root.theme-dark,
