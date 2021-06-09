@@ -48,7 +48,9 @@
     <f7-login-screen id="my-login-screen">
       <f7-view>
         <f7-page login-screen>
-          <f7-login-screen-title>Login</f7-login-screen-title>
+            
+
+          <f7-login-screen-title><img width="200" src="../assets/logo-black.png" alt="" /> <br /></f7-login-screen-title>
           <f7-list form>
             <f7-list-input
               type="text"
