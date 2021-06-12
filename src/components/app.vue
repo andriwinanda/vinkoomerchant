@@ -70,7 +70,7 @@
               title="Sign In"
               @click="alertLoginData"
             ></f7-list-button>
-            <f7-block-footer> </f7-block-footer>
+            <f7-block-footer> Lupa password? <f7-link>Reset password</f7-link> </f7-block-footer>
           </f7-list>
         </f7-page>
       </f7-view>
