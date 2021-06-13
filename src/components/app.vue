@@ -48,9 +48,9 @@
     <f7-login-screen id="my-login-screen">
       <f7-view>
         <f7-page login-screen>
-            
-
-          <f7-login-screen-title><img width="200" src="../assets/logo-black.png" alt="" /> <br /></f7-login-screen-title>
+          <f7-login-screen-title
+            ><img width="200" src="../assets/logo-black.png" alt="" /> <br
+          /></f7-login-screen-title>
           <f7-list form>
             <f7-list-input
               type="text"
@@ -70,7 +70,9 @@
               title="Sign In"
               @click="alertLoginData"
             ></f7-list-button>
-            <f7-block-footer> Lupa password? <f7-link>Reset password</f7-link> </f7-block-footer>
+            <f7-block-footer>
+              Lupa password? <f7-link>Reset password</f7-link>
+            </f7-block-footer>
           </f7-list>
         </f7-page>
       </f7-view>
@@ -83,6 +85,7 @@ import { f7, f7ready } from "framework7-vue";
 
 import routes from "../js/routes.js";
 import store from "../js/store";
+import axios from '../js/axios-helper.js'
 
 export default {
   setup() {
@@ -101,16 +104,45 @@ export default {
       },
     };
     // Login screen data
-    const username = ref("");
-    const password = ref("");
+    const username = ref("sanjaya.kiran@gmail.com");
+    const password = ref("d0d0lm3d4nxx");
 
     const alertLoginData = () => {
-      f7.dialog.alert(
-        "Username: " + username.value + "<br>Password: " + password.value,
-        () => {
-          f7.loginScreen.close();
-        }
-      );
+      // f7.dialog.alert(
+      //   "Username: " + username.value + "<br>Password: " + password.value,
+      //   () => {
+      //     f7.loginScreen.close();
+      //   }
+      // );
+      let dataLogin = {
+        username: username.value,
+        password: password.value,
+        event: "8",
+      };
+      axios.post("/member/login", dataLogin).then((res) => {
+        f7.toast
+          .create({
+            text: "Login Success",
+            position: "bottom",
+            closeTimeout: 2000,
+            destroyOnClose: true,
+          })
+          .open();
+        console.log(res);
+
+        
+        // this.axios.defaults.headers.common["X-Auth-Token"] = token;
+        // this.axios
+        //   .get("/main")
+        //   .then(res => {
+        //     this.isLoading = false;
+        //     let data = res.data.content;
+        //     this.$store.dispatch("login/setCompanyName", data.com_name);
+        //   })
+        //   .catch(error => {
+        //     console.log(error);
+        //   });
+      });
     };
     onMounted(() => {
       f7ready(() => {
