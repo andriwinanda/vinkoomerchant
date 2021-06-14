@@ -45,7 +45,7 @@
       </f7-view>
     </f7-popup>
 
-    <f7-login-screen id="my-login-screen">
+    <f7-login-screen id="my-login-screen" @loginscreen:opened="loadEvent">
       <f7-view>
         <f7-page login-screen>
           <f7-login-screen-title
@@ -68,12 +68,23 @@
           <f7-list>
             <f7-list-button
               title="Sign In"
-              @click="alertLoginData"
+              actions-open="#selectEvent"
             ></f7-list-button>
             <f7-block-footer>
               Lupa password? <f7-link>Reset password</f7-link>
             </f7-block-footer>
           </f7-list>
+          <!-- Two Groups -->
+          <f7-actions id="selectEvent" v-if="events">
+            <!-- <p>{{events[0].id}}</p> -->
+            <f7-actions-group>
+              <f7-actions-label>Do something</f7-actions-label>
+              <f7-actions-button v-for="event in events" :key="event.id">{{event.id}}</f7-actions-button>
+            </f7-actions-group>
+            <f7-actions-group>
+              <f7-actions-button color="red">Cancel</f7-actions-button>
+            </f7-actions-group>
+          </f7-actions>
         </f7-page>
       </f7-view>
     </f7-login-screen>
@@ -81,11 +92,11 @@
 </template>
 <script>
 import { ref, onMounted } from "vue";
-import { f7, f7ready } from "framework7-vue";
+import { Button, f7, f7ready } from "framework7-vue";
 
 import routes from "../js/routes.js";
 import store from "../js/store";
-import axios from '../js/axios-helper.js'
+import axios from "../js/axios-helper.js";
 
 export default {
   setup() {
@@ -106,7 +117,35 @@ export default {
     // Login screen data
     const username = ref("sanjaya.kiran@gmail.com");
     const password = ref("d0d0lm3d4nxx");
+    var events = [];
+    const loadEvent = () => {
+      f7.request
+        .getJSON("http://administrator.vinkoo.id/event/get_event_list")
+        .then((res) => {
+          events = res.data.content;
+          console.log(events)
+        });
 
+      f7.actions.create({
+        buttons: [
+          {
+            text: "Do something",
+            label: true,
+          },
+          {
+            text: "Button 1",
+            bold: true,
+          },
+          {
+            text: "Button 2",
+          },
+          {
+            text: "Cancel",
+            color: "red",
+          },
+        ],
+      });
+    };
     const alertLoginData = () => {
       // f7.dialog.alert(
       //   "Username: " + username.value + "<br>Password: " + password.value,
@@ -118,8 +157,9 @@ export default {
         username: username.value,
         password: password.value,
         event: "8",
-        device: ""
+        device: "",
       };
+
       axios.post("/member/login", dataLogin).then((res) => {
         f7.toast
           .create({
@@ -131,7 +171,6 @@ export default {
           .open();
         console.log(res.data.content);
 
-        
         // this.axios.defaults.headers.common["X-Auth-Token"] = token;
         // this.axios
         //   .get("/main")
@@ -155,7 +194,9 @@ export default {
       f7params,
       username,
       password,
+      events,
       alertLoginData,
+      loadEvent,
     };
   },
 };

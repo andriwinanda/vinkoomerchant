@@ -115,17 +115,11 @@
   </f7-page>
 </template>
 <script>
-import axios from '../js/axios-helper.js'
+import axios from "../js/axios-helper.js";
 export default {
-  data(){
-    return{
-      
-    }
+  data() {
+    return {};
   },
-  created(){
-      axios.get("https://api.tokocurah.com/slider").then((res) => {
-        console.log(res)
-      });
-  }
-}
+  created() {},
+};
 </script>
