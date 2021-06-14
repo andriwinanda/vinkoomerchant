@@ -118,6 +118,7 @@ export default {
         username: username.value,
         password: password.value,
         event: "8",
+        device: ""
       };
       axios.post("/member/login", dataLogin).then((res) => {
         f7.toast
@@ -128,7 +129,7 @@ export default {
             destroyOnClose: true,
           })
           .open();
-        console.log(res);
+        console.log(res.data.content);
 
         
         // this.axios.defaults.headers.common["X-Auth-Token"] = token;
