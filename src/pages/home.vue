@@ -117,7 +117,7 @@
 <script>
 import axios from "../js/axios-helper.js";
 import store from "../js/store";
-import { f7 } from "framework7-vue";
+import { f7, f7router } from "framework7-vue";
 
 
 export default {
@@ -137,7 +137,7 @@ export default {
           })
           .open();
       store.dispatch('logout')
-      f7.views.main.router.navigate('/login')
+      f7router.navigate('/login')
     }
   },
   created(){

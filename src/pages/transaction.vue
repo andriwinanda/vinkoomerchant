@@ -78,12 +78,13 @@ export default {
   methods: {
     getListProduct(val) {
       let params = {
+        date: "",
         limit: limit,
         offset: this.productOffset,
       };
 
       axios
-        .post(`/pos`, params)
+        .post(`/pos/report`, params)
         .then((res) => {
           let data = res.data.content;
           if (data.result.length) {

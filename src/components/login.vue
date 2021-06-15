@@ -41,7 +41,7 @@
 <script>
 import axios from "../js/axios-helper.js";
 import store from "../js/store";
-import { f7 } from "framework7-vue";
+import { f7, f7router } from "framework7-vue";
 
 export default {
   data() {
@@ -86,7 +86,7 @@ export default {
     },
   },
   created() {
-    if (store.getters.isLogin.value) f7.router.navigate("/");
+    if (store.getters.isLogin.value) f7router.navigate("/");
   },
 };
 </script>
