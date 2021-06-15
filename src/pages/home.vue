@@ -41,7 +41,7 @@
           style="border-radius: 20px"
         >
           <f7-link
-            href="/contact"
+            href="/products"
             icon-f7="list_bullet_below_rectangle"
             icon-size="50"
           ></f7-link>
@@ -53,7 +53,7 @@
           style="border-radius: 20px"
         >
           <f7-link
-            href="/contact"
+            href="/orders"
             icon-f7="square_list_fill"
             icon-size="50"
           ></f7-link>
@@ -65,7 +65,7 @@
           style="border-radius: 20px"
         >
           <f7-link
-            href="/contact"
+            href="/transaction"
             icon-f7="arrow_right_arrow_left_square_fill"
             icon-size="50"
           ></f7-link>
@@ -79,7 +79,7 @@
           style="border-radius: 20px"
         >
           <f7-link
-            href="/contact"
+            href="/report"
             icon-f7="chart_bar_square_fill"
             icon-size="50"
           ></f7-link>
@@ -91,7 +91,7 @@
           style="border-radius: 20px"
         >
           <f7-link
-            href="/contact"
+            href="/setting"
             icon-f7="gear_alt_fill"
             icon-size="50"
           ></f7-link>
@@ -103,9 +103,9 @@
           style="border-radius: 20px"
         >
           <f7-link
-            login-screen-open="#my-login-screen"
             icon-f7="square_arrow_left"
             icon-size="50"
+            @click="logout()"
           ></f7-link>
           <br />
           <small class="text-color-primary">Logout</small>
@@ -116,10 +116,31 @@
 </template>
 <script>
 import axios from "../js/axios-helper.js";
+import store from "../js/store";
+import { f7 } from "framework7-vue";
+
+
 export default {
   data() {
-    return {};
+    return {
+      
+    };
   },
-  created() {},
+  methods:{
+    logout(){
+      f7.toast
+          .create({
+            text: "Logged out",
+            position: "bottom",
+            closeTimeout: 2000,
+            destroyOnClose: true,
+          })
+          .open();
+      store.dispatch('logout')
+      f7.views.main.router.navigate('/login')
+    }
+  },
+  created(){
+  }
 };
 </script>

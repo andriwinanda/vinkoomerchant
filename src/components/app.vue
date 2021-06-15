@@ -45,7 +45,7 @@
       </f7-view>
     </f7-popup>
 
-    <f7-login-screen id="my-login-screen" @loginscreen:opened="loadEvent">
+    <f7-login-screen id="loginScreen" @loginscreen:opened="loadEvent">
       <f7-view>
         <f7-page login-screen>
           <f7-login-screen-title
@@ -68,7 +68,7 @@
           <f7-list>
             <f7-list-button
               title="Sign In"
-              actions-open="#selectEvent"
+              @click="loginData"
             ></f7-list-button>
             <f7-block-footer>
               Lupa password? <f7-link>Reset password</f7-link>
@@ -146,7 +146,7 @@ export default {
         ],
       });
     };
-    const alertLoginData = () => {
+    const loginData = () => {
       // f7.dialog.alert(
       //   "Username: " + username.value + "<br>Password: " + password.value,
       //   () => {
@@ -169,7 +169,9 @@ export default {
             destroyOnClose: true,
           })
           .open();
-        console.log(res.data.content);
+          let token = res.data.content.token
+          store.dispatch('login', token)
+          f7.loginScreen.close();
 
         // this.axios.defaults.headers.common["X-Auth-Token"] = token;
         // this.axios
@@ -185,8 +187,12 @@ export default {
       });
     };
     onMounted(() => {
-      f7ready(() => {
+    if(!store.getters.isLogin.value) {
+      f7.views.main.router.navigate('/login')
+    }
+      f7ready((f7) => {
         // Call F7 APIs here
+        
       });
     });
 
@@ -195,7 +201,7 @@ export default {
       username,
       password,
       events,
-      alertLoginData,
+      loginData,
       loadEvent,
     };
   },

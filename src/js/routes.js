@@ -1,6 +1,8 @@
 
 import HomePage from '../pages/home.vue';
-import AboutPage from '../pages/about.vue';
+import Login from '../components/login.vue';
+import Products from '../pages/products.vue';
+import Transaction from '../pages/transaction.vue';
 import FormPage from '../pages/form.vue';
 
 
@@ -14,12 +16,16 @@ var routes = [
     component: HomePage,
   },
   {
-    path: '/about/',
-    component: AboutPage,
+    path: '/login',
+    component: Login,
   },
   {
-    path: '/form/',
-    component: FormPage,
+    path: '/products',
+    component: Products,
+  },
+  {
+    path: '/transaction',
+    component: Transaction,
   },
 
 
