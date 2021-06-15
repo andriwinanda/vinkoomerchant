@@ -8,7 +8,8 @@ let myAxios = axios.create();
 if (getToken()) {
   myAxios.defaults.headers.common["X-Auth-Token"] = getToken();
 }
-myAxios.defaults.baseURL = 'https://api.vinkoo.id/'
+if (process.env.NODE_ENV === "development") myAxios.defaults.baseURL = 'http://api.vinkoo.id/'
+else myAxios.defaults.baseURL = 'https://api.vinkoo.id/'
 
 
 

@@ -117,30 +117,26 @@
 <script>
 import axios from "../js/axios-helper.js";
 import store from "../js/store";
-import { f7, f7router } from "framework7-vue";
-
+import { f7 } from "framework7-vue";
 
 export default {
   data() {
-    return {
-      
-    };
+    return {};
   },
-  methods:{
-    logout(){
+  methods: {
+    logout() {
       f7.toast
-          .create({
-            text: "Logged out",
-            position: "bottom",
-            closeTimeout: 2000,
-            destroyOnClose: true,
-          })
-          .open();
-      store.dispatch('logout')
-      f7router.navigate('/login')
-    }
+        .create({
+          text: "Logged out",
+          position: "bottom",
+          closeTimeout: 2000,
+          destroyOnClose: true,
+        })
+        .open();
+      store.dispatch("logout");
+      f7.views.main.router.navigate("/login");
+    },
   },
-  created(){
-  }
+  created() {},
 };
 </script>
