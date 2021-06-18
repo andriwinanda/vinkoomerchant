@@ -45,31 +45,44 @@
       </f7-view>
     </f7-popup>
 
-    <f7-login-screen id="loginScreen" @loginscreen:opened="loadEvent">
+    <f7-popup>
       <f7-view>
-        <f7-page login-screen>
-          <f7-login-screen-title
+        <f7-page class="bg-color-white">
+          <f7-icon
+            f7="multiply"
+            class="float-right padding popup-close"
+          ></f7-icon>
+          <p>{{showPasswordForm}}</p>
+          <f7-block-title
             ><img width="200" src="../assets/logo-black.png" alt="" /> <br
-          /></f7-login-screen-title>
-          <f7-list form>
+          /></f7-block-title>
+          <f7-list form no-hairlines>
             <f7-list-input
+              label="Username"
               type="text"
               name="username"
               placeholder="Your username"
               v-model:value="username"
-            ></f7-list-input>
-            <f7-list-input
-              type="password"
-              name="password"
-              placeholder="Your password"
-              v-model:value="password"
-            ></f7-list-input>
+            >
+            </f7-list-input>
+            <span v-if="showPasswordForm == true">
+              <f7-list-input
+                label="OTP"
+                type="number"
+                name="otp"
+                placeholder="OTP"
+                v-model:value="otp"
+              ></f7-list-input> <f7-list-input
+                label="Password"
+                type="password"
+                name="password"
+                placeholder="Your password"
+                v-model:value="password"
+              ></f7-list-input>
+            </span >
           </f7-list>
           <f7-list>
-            <f7-list-button
-              title="Sign In"
-              @click="loginData"
-            ></f7-list-button>
+            <f7-list-button title="Sign In" @click="sendOtp"></f7-list-button>
             <f7-block-footer>
               Lupa password? <f7-link>Reset password</f7-link>
             </f7-block-footer>
@@ -79,7 +92,9 @@
             <!-- <p>{{events[0].id}}</p> -->
             <f7-actions-group>
               <f7-actions-label>Do something</f7-actions-label>
-              <f7-actions-button v-for="event in events" :key="event.id">{{event.id}}</f7-actions-button>
+              <f7-actions-button v-for="event in events" :key="event.id">{{
+                event.id
+              }}</f7-actions-button>
             </f7-actions-group>
             <f7-actions-group>
               <f7-actions-button color="red">Cancel</f7-actions-button>
@@ -87,7 +102,7 @@
           </f7-actions>
         </f7-page>
       </f7-view>
-    </f7-login-screen>
+    </f7-popup>
   </f7-app>
 </template>
 <script>
@@ -117,35 +132,22 @@ export default {
     // Login screen data
     const username = ref("sanjaya.kiran@gmail.com");
     const password = ref("d0d0lm3d4nxx");
+    const otp = "";
+    var showPasswordForm = false;
     var events = [];
     const loadEvent = () => {
       f7.request
         .getJSON("http://administrator.vinkoo.id/event/get_event_list")
         .then((res) => {
           events = res.data.content;
-          console.log(events)
+          console.log(events);
         });
 
-      f7.actions.create({
-        buttons: [
-          {
-            text: "Do something",
-            label: true,
-          },
-          {
-            text: "Button 1",
-            bold: true,
-          },
-          {
-            text: "Button 2",
-          },
-          {
-            text: "Cancel",
-            color: "red",
-          },
-        ],
-      });
     };
+    const sendOtp = () =>{
+      showPasswordForm = true
+      console.log(showPasswordForm)
+    }
     const loginData = () => {
       // f7.dialog.alert(
       //   "Username: " + username.value + "<br>Password: " + password.value,
@@ -169,9 +171,9 @@ export default {
             destroyOnClose: true,
           })
           .open();
-          let token = res.data.content.token
-          store.dispatch('login', token)
-          f7.loginScreen.close();
+        let token = res.data.content.token;
+        store.dispatch("login", token);
+        f7.loginScreen.close();
 
         // this.axios.defaults.headers.common["X-Auth-Token"] = token;
         // this.axios
@@ -187,12 +189,11 @@ export default {
       });
     };
     onMounted(() => {
-    if(!store.getters.isLogin.value) {
-      f7.views.main.router.navigate('/login')
-    }
+      if (!store.getters.isLogin.value) {
+        f7.views.main.router.navigate("/login");
+      }
       f7ready((f7) => {
         // Call F7 APIs here
-        
       });
     });
 
@@ -203,6 +204,10 @@ export default {
       events,
       loginData,
       loadEvent,
+      otp,
+      sendOtp,
+      showPasswordForm,
+      
     };
   },
 };
