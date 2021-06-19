@@ -2,7 +2,8 @@
   <f7-page no-toolbar no-navbar no-swipeback login-screen>
     <f7-login-screen-title
       ><img width="200" src="../assets/logo-black.png" alt="" /> <br />
-      Merchant
+      <span class="color gray">Merchant</span> 
+      <f7-icon material="store"></f7-icon>
     </f7-login-screen-title>
     <f7-list form>
       <f7-list-input
