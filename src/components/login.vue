@@ -1,8 +1,8 @@
 <template>
   <f7-page no-toolbar no-navbar no-swipeback login-screen>
     <f7-login-screen-title
-      ><img width="200" src="../assets/logo-black.png" alt="" /> <br
-    /> Merchant
+      ><img width="200" src="../assets/logo-black.png" alt="" /> <br />
+      Merchant
     </f7-login-screen-title>
     <f7-list form>
       <f7-list-input
@@ -46,10 +46,8 @@
     <f7-popup id="resetPassword">
       <f7-view>
         <f7-page class="bg-color-white">
-          <f7-icon
-            f7="multiply"
-            class="float-right padding popup-close"
-          ></f7-icon>
+          <f7-link icon-f7="multiply" class="float-right padding popup-close">
+          </f7-link>
           <f7-block-title>
             <!-- <img width="200" src="../assets/logo-black.png" alt="" /> -->
             <br />
@@ -161,7 +159,7 @@ export default {
         axios.post("member/req_otp", username).then((res) => {
           f7.toast
             .create({
-              text: res.data.content + " Check your sms!",
+              text: res.data.content + " Check your inbox!",
               position: "bottom",
               closeTimeout: 2000,
               destroyOnClose: true,
@@ -193,6 +191,9 @@ export default {
             f7.popup.close("#resetPassword");
           })
           .catch((err) => {
+            this.usernameToReset = "";
+            this.passwordToReset = "";
+            this.otpToReset = "";
             f7.toast
               .create({
                 text: err.response.data.error,
