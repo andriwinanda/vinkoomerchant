@@ -2,7 +2,7 @@
   <f7-page no-toolbar no-navbar no-swipeback login-screen>
     <f7-login-screen-title
       ><img width="200" src="../assets/logo-black.png" alt="" /> <br />
-      <span class="color gray">Merchant</span> 
+      <span class="color gray">Merchant</span>
       <f7-icon material="store"></f7-icon>
     </f7-login-screen-title>
     <f7-list form>
@@ -195,6 +195,7 @@ export default {
             this.usernameToReset = "";
             this.passwordToReset = "";
             this.otpToReset = "";
+            this.showPasswordForm = false;
             f7.toast
               .create({
                 text: err.response.data.error,
