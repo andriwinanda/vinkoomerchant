@@ -182,20 +182,20 @@ export default {
           .then((res) => {
             f7.toast
               .create({
-                text: res.data.content + "Please login again!",
+                text: res.data.content + " Please login again!",
                 position: "bottom",
                 closeTimeout: 2000,
                 destroyOnClose: true,
               })
               .open();
-
             f7.popup.close("#resetPassword");
-          })
-          .catch((err) => {
+
             this.usernameToReset = "";
             this.passwordToReset = "";
             this.otpToReset = "";
             this.showPasswordForm = false;
+          })
+          .catch((err) => {
             f7.toast
               .create({
                 text: err.response.data.error,
