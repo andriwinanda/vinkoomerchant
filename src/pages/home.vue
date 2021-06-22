@@ -119,7 +119,13 @@ import axios from "../js/axios-helper.js";
 import store from "../js/store";
 import { f7 } from "framework7-vue";
 
+
 export default {
+
+  props: {
+    f7route: Object,
+    f7router: Object,
+  },
   data() {
     return {};
   },
@@ -134,9 +140,11 @@ export default {
         })
         .open();
       store.dispatch("logout");
-      f7.views.main.router.navigate("/login");
+      this.f7router.navigate("/login");
     },
   },
-  created() {},
+  created() {
+  //  f7.view.main.router.clearPreviousHistory()	
+  },
 };
 </script>

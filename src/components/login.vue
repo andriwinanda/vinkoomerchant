@@ -1,5 +1,5 @@
 <template>
-  <f7-page no-toolbar no-navbar no-swipeback login-screen>
+  <f7-page name="login" id="loginScreen" no-toolbar no-navbar login-screen>
     <f7-login-screen-title
       ><img width="200" src="../assets/logo-black.png" alt="" /> <br />
       <span class="color gray">Merchant</span>
@@ -106,6 +106,10 @@ import store from "../js/store";
 import { f7 } from "framework7-vue";
 
 export default {
+  props: {
+    f7route: Object,
+    f7router: Object,
+  },
   data() {
     return {
       username: "",
@@ -124,7 +128,7 @@ export default {
         event: "8",
         device: "",
       };
-
+      f7.dialog.preloader();
       axios
         .post("/member/login", dataLogin)
         .then((res) => {
@@ -138,8 +142,9 @@ export default {
             .open();
           let token = res.data.content.token;
           store.dispatch("login", token);
-          f7.views.main.router.navigate("/");
           axios.defaults.headers.common["X-Auth-Token"] = token;
+          f7.dialog.close();
+          this.f7router.navigate("/");
         })
         .catch((err) => {
           f7.toast
@@ -150,6 +155,7 @@ export default {
               destroyOnClose: true,
             })
             .open();
+          f7.dialog.close();
         });
     },
     sendOtp() {
@@ -157,6 +163,8 @@ export default {
         username: this.usernameToReset,
       };
       if (this.usernameToReset) {
+        f7.dialog.preloader();
+
         axios.post("member/req_otp", username).then((res) => {
           f7.toast
             .create({
@@ -167,6 +175,7 @@ export default {
             })
             .open();
           this.showPasswordForm = true;
+          f7.dialog.close();
         });
       }
     },
@@ -177,6 +186,7 @@ export default {
         otp: this.otpToReset,
       };
       if (this.usernameToReset) {
+        f7.dialog.preloader();
         axios
           .post("member/forgot", resetData)
           .then((res) => {
@@ -189,6 +199,7 @@ export default {
               })
               .open();
             f7.popup.close("#resetPassword");
+            f7.dialog.close();
 
             this.usernameToReset = "";
             this.passwordToReset = "";
@@ -205,11 +216,10 @@ export default {
               })
               .open();
           });
+        f7.dialog.close();
       }
     },
   },
-  created() {
-    if (store.getters.isLogin.value) f7.views.main.router.navigate("/");
-  },
+  mounted() {},
 };
 </script>

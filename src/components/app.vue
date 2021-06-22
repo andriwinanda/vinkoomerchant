@@ -3,8 +3,8 @@
     <!-- Your main view, should have "view-main" class -->
     <f7-view
       main
+      :url="initUrl"
       class="safe-areas"
-      url="/"
       :pushState="true"
       browser-history
       browser-history-separator=""
@@ -44,65 +44,6 @@
         </f7-page>
       </f7-view>
     </f7-popup>
-
-    <f7-popup>
-      <f7-view>
-        <f7-page class="bg-color-white">
-          <f7-icon
-            f7="multiply"
-            class="float-right padding popup-close"
-          ></f7-icon>
-          <p>{{showPasswordForm}}</p>
-          <f7-block-title
-            ><img width="200" src="../assets/logo-black.png" alt="" /> <br
-          /></f7-block-title>
-          <f7-list form no-hairlines>
-            <f7-list-input
-              label="Username"
-              type="text"
-              name="username"
-              placeholder="Your username"
-              v-model:value="username"
-            >
-            </f7-list-input>
-            <span v-if="showPasswordForm == true">
-              <f7-list-input
-                label="OTP"
-                type="number"
-                name="otp"
-                placeholder="OTP"
-                v-model:value="otp"
-              ></f7-list-input> <f7-list-input
-                label="Password"
-                type="password"
-                name="password"
-                placeholder="Your password"
-                v-model:value="password"
-              ></f7-list-input>
-            </span >
-          </f7-list>
-          <f7-list>
-            <f7-list-button title="Sign In" @click="sendOtp"></f7-list-button>
-            <f7-block-footer>
-              Lupa password? <f7-link>Reset password</f7-link>
-            </f7-block-footer>
-          </f7-list>
-          <!-- Two Groups -->
-          <f7-actions id="selectEvent" v-if="events">
-            <!-- <p>{{events[0].id}}</p> -->
-            <f7-actions-group>
-              <f7-actions-label>Do something</f7-actions-label>
-              <f7-actions-button v-for="event in events" :key="event.id">{{
-                event.id
-              }}</f7-actions-button>
-            </f7-actions-group>
-            <f7-actions-group>
-              <f7-actions-button color="red">Cancel</f7-actions-button>
-            </f7-actions-group>
-          </f7-actions>
-        </f7-page>
-      </f7-view>
-    </f7-popup>
   </f7-app>
 </template>
 <script>
@@ -129,68 +70,11 @@ export default {
         path: "/service-worker.js",
       },
     };
-    // Login screen data
-    const username = ref("sanjaya.kiran@gmail.com");
-    const password = ref("d0d0lm3d4nxx");
-    const otp = "";
-    var showPasswordForm = false;
-    var events = [];
-    const loadEvent = () => {
-      f7.request
-        .getJSON("http://administrator.vinkoo.id/event/get_event_list")
-        .then((res) => {
-          events = res.data.content;
-          console.log(events);
-        });
-
-    };
-    const sendOtp = () =>{
-      showPasswordForm = true
-      console.log(showPasswordForm)
-    }
-    const loginData = () => {
-      // f7.dialog.alert(
-      //   "Username: " + username.value + "<br>Password: " + password.value,
-      //   () => {
-      //     f7.loginScreen.close();
-      //   }
-      // );
-      let dataLogin = {
-        username: username.value,
-        password: password.value,
-        event: "8",
-        device: "",
-      };
-
-      axios.post("/member/login", dataLogin).then((res) => {
-        f7.toast
-          .create({
-            text: "Login Success",
-            position: "bottom",
-            closeTimeout: 2000,
-            destroyOnClose: true,
-          })
-          .open();
-        let token = res.data.content.token;
-        store.dispatch("login", token);
-        f7.loginScreen.close();
-
-        // this.axios.defaults.headers.common["X-Auth-Token"] = token;
-        // this.axios
-        //   .get("/main")
-        //   .then(res => {
-        //     this.isLoading = false;
-        //     let data = res.data.content;
-        //     this.$store.dispatch("login/setCompanyName", data.com_name);
-        //   })
-        //   .catch(error => {
-        //     console.log(error);
-        //   });
-      });
-    };
+    let initUrl = "/";
+    if (!store.getters.isLogin.value) initUrl = "/login";
     onMounted(() => {
       if (!store.getters.isLogin.value) {
-        f7.views.main.router.navigate("/login");
+        f7.view.main.router.navigate("/login");
       }
       f7ready((f7) => {
         // Call F7 APIs here
@@ -199,15 +83,7 @@ export default {
 
     return {
       f7params,
-      username,
-      password,
-      events,
-      loginData,
-      loadEvent,
-      otp,
-      sendOtp,
-      showPasswordForm,
-      
+      initUrl
     };
   },
 };
