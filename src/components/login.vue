@@ -44,7 +44,7 @@
     </f7-actions>
 
     <!-- RESET PASSWORD -->
-    <f7-popup id="resetPassword">
+    <f7-popup id="resetPassword"  @popup:close="resetForm">
       <f7-view>
         <f7-page class="bg-color-white">
           <f7-link icon-f7="multiply" class="float-right padding popup-close">
@@ -90,11 +90,6 @@
               {{ showPasswordForm ? "Reset Password" : "Send OTP" }}
             </f7-button>
           </f7-block>
-          <!-- <f7-list no-hairlines>
-            <f7-list-button @click="sendOtp" >
-              {{ showPasswordForm ? "Reset Password" : "Send OTP" }}
-            </f7-list-button>
-          </f7-list> -->
         </f7-page>
       </f7-view>
     </f7-popup>
@@ -200,11 +195,6 @@ export default {
               .open();
             f7.popup.close("#resetPassword");
             f7.dialog.close();
-
-            this.usernameToReset = "";
-            this.passwordToReset = "";
-            this.otpToReset = "";
-            this.showPasswordForm = false;
           })
           .catch((err) => {
             f7.toast
@@ -218,6 +208,12 @@ export default {
           });
         f7.dialog.close();
       }
+    },
+    resetForm() {
+      this.usernameToReset = "";
+      this.passwordToReset = "";
+      this.otpToReset = "";
+      this.showPasswordForm = false;
     },
   },
   mounted() {},

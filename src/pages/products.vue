@@ -8,7 +8,7 @@
         @keypress.enter.prevent="searchProduct()"
         :disable-button="false"
       ></f7-searchbar>
-      <f7-icon f7="slider_horizontal_3"></f7-icon>
+      <f7-link icon-f7="slider_horizontal_3" sheet-open=".filter"></f7-link>
       <!-- <f7-subnavbar :inner="false">
       </f7-subnavbar>-->
     </f7-navbar>
@@ -18,12 +18,22 @@
       :infinite-preloader="showPreloader"
       @infinite="loadMore"
     >
-      <div class="card" v-for="product in products" :key="product.id">
+     <template v-if="!products.length && !showPreloader">
+      <f7-block>
+        <p class="text-align-center" color="gray">No item</p>
+      </f7-block>
+    </template>
+    <template v-else>
+      <div
+        class="card margin-vertical-half"
+        v-for="product in products"
+        :key="product.id"
+      >
         <a @click.prevent="getDetail(product.id)">
           <div class="card-content card-content-padding">
             <div class="row">
               <div class="col-30">
-                <img height="50" :src="product.image" alt="" />
+                <img height="40" :src="product.image" alt="" />
               </div>
               <div class="col-70">
                 <p class="capitalized no-margin" color-theme="red">
@@ -41,6 +51,8 @@
           </div>
         </a>
       </div>
+    </template>
+   
 
       <!-- FAB -->
       <div class="fab fab-right-bottom">
@@ -58,7 +70,10 @@
           ></f7-icon>
           <img
             style="margin: 0 auto; display: block; width: 100%"
-            :src="produkDetail  ? produkDetail.image  : 'https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png'
+            :src="
+              produkDetail
+                ? produkDetail.image
+                : 'https://wtwp.com/wp-content/uploads/2015/06/placeholder-image.png'
             "
             alt
           />
@@ -170,31 +185,49 @@
               </f7-col>
             </f7-row>
           </f7-block>
-
-          <!-- SKELETON -->
-          <!-- <div v-else>
-            <f7-skeleton-block
-              class="skeleton-effect-blink"
-              style="width: 100%; height: 250px"
-            ></f7-skeleton-block>
-            <div class="padding">
-              <f7-skeleton-text class="skeleton-effect-blink" tag="h4"
-                >Lorem ipsum, dolor sit amet consectetur
-              </f7-skeleton-text>
-              <f7-skeleton-text class="skeleton-effect-blink" tag="h4"
-                >Lorem ipsum, dolor sit amet
-              </f7-skeleton-text>
-              <br />
-              <f7-skeleton-text class="skeleton-effect-blink" tag="h4"
-                >Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Cumque ad doloribus, excepturi maxime molestias assumenda esse
-                molestiae repudiandae aliquam debitis nihil libero sequi fugiat
-                laborum ipsa nemo, sint vel corrupti?</f7-skeleton-text
-              >
-            </div>
-          </div> -->
         </f7-page>
       </f7-popup>
+
+      <!-- FILTER -->
+      <f7-sheet
+        class="filter"
+        style="height: auto; --f7-sheet-bg-color: #fff"
+        swipe-to-close
+        backdrop
+      >
+        <f7-page-content>
+          <f7-block-title
+            >Filter
+            <f7-link class="float-right text-color-gray sheet-close" @click="resetProductList()"
+              ><small>Reset all</small>
+            </f7-link></f7-block-title
+          >
+          <f7-list no-hairlines>
+            <f7-list-input
+              label="Category"
+              type="select"
+              placeholder="Please choose..."
+              :value="categorySelected"
+              v-model="categorySelected"
+              @input="categorySelected = $event.target.value"
+            >
+              <f7-icon icon="demo-list-icon"></f7-icon>
+              <option value="" selected disabled>Choose category</option>
+              <option
+                v-for="item in categoryList"
+                :key="item.id"
+                :value="item.id"
+                class="capitalized"
+              >
+                {{ item.name.toUpperCase() }}
+              </option>
+            </f7-list-input>
+          </f7-list>
+          <f7-block>
+            <f7-button fill color="primary" class="sheet-close" @click="filter()"> Filter </f7-button>
+          </f7-block>
+        </f7-page-content>
+      </f7-sheet>
     </f7-page>
   </f7-page>
 </template>
@@ -216,9 +249,8 @@ export default {
 
       produkDetail: null,
       id: "",
-      currencyList: [],
-      manufactureList: [],
       categoryList: [],
+      categorySelected: "",
       edit1: {
         tname: "",
         tsku: "",
@@ -238,6 +270,7 @@ export default {
       let data = {
         limit: limit,
         offset: this.productOffset,
+        category: this.categorySelected,
       };
 
       let ajax;
@@ -273,6 +306,10 @@ export default {
         this.getListProduct();
       }
     },
+    filter(){
+      this.products = []
+      this.getListProduct()
+    },
     numeric(val) {
       var formatter = new Intl.NumberFormat("ID", {
         style: "currency",
@@ -294,9 +331,10 @@ export default {
       this.products = [];
       this.productOffset = 0;
       this.productRecord = 0;
+      this.categorySelected= ""
       this.getListProduct();
       // Reset Data
-      this.produkDetail = {}
+      this.produkDetail = {};
       this.edit1 = {
         tname: "",
         tsku: "",
@@ -370,9 +408,7 @@ export default {
     // Load Category
     loadCategory() {
       axios.get("/category").then((res) => {
-        this.categoryList = [];
-
-        console.log(res);
+        this.categoryList = res.data.content.result;
       });
     },
     urlEncoded(obj) {
