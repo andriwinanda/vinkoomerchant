@@ -12,54 +12,53 @@
       <!-- <f7-subnavbar :inner="false">
       </f7-subnavbar>-->
     </f7-navbar>
+
+    <!-- FAB -->
+    <div class="fab fab-right-bottom">
+      <f7-link @click="isEditFormActive = true" popup-open=".popup-detail">
+        <i class="icon f7-icons if-not-md">plus</i>
+      </f7-link>
+    </div>
     <f7-page
       infinite
       :infinite-distance="50"
       :infinite-preloader="showPreloader"
       @infinite="loadMore"
     >
-     <template v-if="!products.length && !showPreloader">
-      <f7-block>
-        <p class="text-align-center" color="gray">No item</p>
-      </f7-block>
-    </template>
-    <template v-else>
-      <div
-        class="card margin-vertical-half"
-        v-for="product in products"
-        :key="product.id"
-      >
-        <a @click.prevent="getDetail(product.id)">
-          <div class="card-content card-content-padding">
-            <div class="row">
-              <div class="col-30">
-                <img height="40" :src="product.image" alt="" />
-              </div>
-              <div class="col-70">
-                <p class="capitalized no-margin" color-theme="red">
-                  <strong>
-                    {{ product.name }}
-                  </strong>
-                  <br />
-                  {{ numeric(product.price) }} <br />
-                  <small v-if="product.discount">
-                    <strike>Rp 48.000</strike> &#9899; <span>50% OFF</span>
-                  </small>
-                </p>
+      <template v-if="!products.length && !showPreloader">
+        <f7-block>
+          <p class="text-align-center" color="gray">No item</p>
+        </f7-block>
+      </template>
+      <template v-else>
+        <div
+          class="card margin-vertical-half"
+          v-for="product in products"
+          :key="product.id"
+        >
+          <a @click.prevent="getDetail(product.id)">
+            <div class="card-content card-content-padding">
+              <div class="row">
+                <div class="col-30">
+                  <img height="40" :src="product.image" alt="" />
+                </div>
+                <div class="col-70">
+                  <p class="capitalized no-margin" color-theme="red">
+                    <strong>
+                      {{ product.name }}
+                    </strong>
+                    <br />
+                    {{ numeric(product.price) }} <br />
+                    <small v-if="product.discount">
+                      <strike>Rp 48.000</strike> &#9899; <span>50% OFF</span>
+                    </small>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        </a>
-      </div>
-    </template>
-   
-
-      <!-- FAB -->
-      <div class="fab fab-right-bottom">
-        <f7-link @click="isEditFormActive = true" popup-open=".popup-detail">
-          <i class="icon f7-icons if-not-md">plus</i>
-        </f7-link>
-      </div>
+          </a>
+        </div>
+      </template>
 
       <!-- Popup -->
       <f7-popup class="popup popup-detail" @popup:close="resetProductList">
@@ -93,15 +92,14 @@
               </tr>
               <tr>
                 <td>{{ "category" }}</td>
-                <td class="capitalized">: {{ produkDetail.category || "" }}</td>
-              </tr>
-              <tr>
-                <td>Brand</td>
-                <td class="capitalized">: {{ produkDetail.brand || "" }}</td>
-              </tr>
-              <tr>
-                <td>Qty</td>
-                <td>: {{ produkDetail.qty || 0 }}</td>
+                <td class="capitalized">
+                  :
+                  {{
+                    produkDetail.category
+                      ? findInArray(produkDetail.category)
+                      : ""
+                  }}
+                </td>
               </tr>
               <tr>
                 <td>{{ "Description" }}</td>
@@ -138,6 +136,7 @@
                 @input="edit1.tsku = $event.target.value"
               ></f7-list-input>
               <f7-list-input
+                :value="edit1.ccategory"
                 v-model="edit1.ccategory"
                 @input="edit1.ccategory = $event.target.value"
                 label="Category"
@@ -151,14 +150,6 @@
                   {{ category.name.toUpperCase() }}
                 </option>
               </f7-list-input>
-
-              <f7-list-input
-                label="Qty"
-                type="number"
-                :value="edit1.tqty"
-                :min="0"
-                @input="edit1.tqty = $event.target.value"
-              ></f7-list-input>
               <f7-list-input
                 label="Price"
                 type="number"
@@ -198,7 +189,9 @@
         <f7-page-content>
           <f7-block-title
             >Filter
-            <f7-link class="float-right text-color-gray sheet-close" @click="resetProductList()"
+            <f7-link
+              class="float-right text-color-gray sheet-close"
+              @click="resetProductList()"
               ><small>Reset all</small>
             </f7-link></f7-block-title
           >
@@ -224,7 +217,14 @@
             </f7-list-input>
           </f7-list>
           <f7-block>
-            <f7-button fill color="primary" class="sheet-close" @click="filter()"> Filter </f7-button>
+            <f7-button
+              fill
+              color="primary"
+              class="sheet-close"
+              @click="filter()"
+            >
+              Filter
+            </f7-button>
           </f7-block>
         </f7-page-content>
       </f7-sheet>
@@ -235,7 +235,7 @@
 import axios from "../js/axios-helper.js";
 import { f7 } from "framework7-vue";
 import debounce from "debounce";
-const limit = 6;
+const limit = 10;
 export default {
   data() {
     return {
@@ -267,6 +267,7 @@ export default {
   },
   methods: {
     getListProduct(val) {
+      this.showPreloader = true;
       let data = {
         limit: limit,
         offset: this.productOffset,
@@ -296,19 +297,16 @@ export default {
         });
     },
     loadMore() {
-      console.log(this.productRecord);
-      if (
-        !this.showPreloader &&
-        this.productRecord &&
-        this.products.length < this.productRecord
-      ) {
-        this.productOffset += limit;
-        this.getListProduct();
+      if (!this.showPreloader) {
+        if (this.products.length < this.productRecord) {
+          this.productOffset += limit;
+          this.getListProduct();
+        }
       }
     },
-    filter(){
-      this.products = []
-      this.getListProduct()
+    filter() {
+      this.products = [];
+      this.getListProduct();
     },
     numeric(val) {
       var formatter = new Intl.NumberFormat("ID", {
@@ -331,7 +329,7 @@ export default {
       this.products = [];
       this.productOffset = 0;
       this.productRecord = 0;
-      this.categorySelected= ""
+      this.categorySelected = "";
       this.getListProduct();
       // Reset Data
       this.produkDetail = {};
@@ -400,7 +398,7 @@ export default {
       this.edit1 = {
         tname: this.produkDetail.name,
         tsku: this.produkDetail.sku,
-        ccategory: this.produkDetail.category_id,
+        ccategory: this.produkDetail.category,
         tdesc: this.produkDetail.description,
         tprice: this.produkDetail.price,
       };
@@ -423,6 +421,8 @@ export default {
       return str.join("&");
     },
     updateProduct() {
+      const self = this;
+      f7.dialog.preloader();
       let ajax;
       if (this.id) {
         ajax = axios.post(
@@ -441,24 +441,17 @@ export default {
           },
         });
       }
-      ajax;
-      f7.dialog.preloader();
-      axios
-        .post(`/product/update/${this.id}`, this.urlEncoded(this.edit1), {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        })
+      ajax
         .then((res) => {
           f7.dialog.close();
-          f7.dialog.alert("Update success", "Success!");
+          // f7.dialog.alert("Update success", "Success!");
           this.isEditFormActive = false;
           if (this.id) {
             this.getDetail(this.id);
           } else {
             f7.popup.close();
+            this.id = "";
           }
-          this.id = "";
           this.edit1 = {
             tname: "",
             tsku: "",
@@ -476,6 +469,12 @@ export default {
           f7.dialog.close();
           f7.dialog.alert(err.response.data.error, "Error!");
         });
+    },
+    findInArray(val) {
+      let result = this.categoryList.filter((obj) => {
+        return obj.id == val;
+      });
+      return result[0].name;
     },
   },
   mounted() {

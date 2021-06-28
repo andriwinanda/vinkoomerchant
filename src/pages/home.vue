@@ -29,8 +29,10 @@
           <f7-icon size="35" f7="creditcard_fill"></f7-icon>
         </f7-col>
         <f7-col width="70" class="text-align-right">
-          <span>Rp</span> <strong class="saldo">15.000.000</strong> <br />
-          <small>14 May 2021 17:15 WIB</small>
+          <span>Rp</span> <strong class="saldo">{{ numeric(balance) }}</strong>
+          <br />
+          <small>{{ myDate(new Date()) }}</small>
+          
         </f7-col>
       </f7-row>
     </f7-card>
@@ -118,18 +120,36 @@
 import axios from "../js/axios-helper.js";
 import store from "../js/store";
 import { f7 } from "framework7-vue";
-
+import moment from "moment";
 
 export default {
-
   props: {
     f7route: Object,
     f7router: Object,
   },
   data() {
-    return {};
+    return {
+      balance: 0,
+    };
   },
   methods: {
+    getBalance() {
+      axios.get("member/ledger").then((res) => {
+        this.balance = res.data.content.balance;
+      });
+    },
+    numeric(val) {
+      var formatter = new Intl.NumberFormat("ID", {
+        style: "decimal",
+        currency: "IDR",
+
+        // These options are needed to round to whole numbers if that's what you want.
+        minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+        //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+      });
+      return formatter.format(val);
+    },
+
     logout() {
       f7.toast
         .create({
@@ -142,9 +162,12 @@ export default {
       store.dispatch("logout");
       this.f7router.navigate("/login");
     },
+    myDate(value) {
+      return moment(value).format("DD MMM YYYY HH:mm A");
+    },
   },
   created() {
-  //  f7.view.main.router.clearPreviousHistory()	
+    this.getBalance();
   },
 };
 </script>

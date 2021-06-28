@@ -17,6 +17,7 @@
         name="password"
         placeholder="Your password"
         v-model:value="password"
+        @keypress.enter.prevent="login()"
       ></f7-list-input>
     </f7-list>
     <f7-block>
@@ -61,6 +62,7 @@
               name="username"
               placeholder="Your username"
               v-model:value="usernameToReset"
+              @keypress.enter.prevent="!showPasswordForm ? sendOtp():''"
               required
             >
             </f7-list-input>
@@ -78,6 +80,7 @@
                 name="password"
                 placeholder="Your password"
                 v-model:value="passwordToReset"
+                @keypress.enter.prevent="resetPassword()"
               ></f7-list-input>
             </template>
           </f7-list>
