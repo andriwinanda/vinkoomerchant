@@ -121,7 +121,7 @@
           <!-- ===EDIT PRODUCT=== -->
 
           <f7-block v-else>
-            <input type="file" id="_file" accept="image/*;capture=camera" />
+            <input type="file" @input="edit1.userfile = $event.target.files[0]" id="_file" accept="image/*;capture=camera" />
             <f7-list no-hairlines>
               <f7-list-input
                 label="Name"
@@ -254,13 +254,11 @@ export default {
       edit1: {
         tname: "",
         tsku: "",
-        tmodel: "",
-        ccur: "",
         ccategory: 0,
-        cmanufacture: "",
         tdesc: "",
-        tshortdesc: "",
-        tprice: 0,
+        tprice: null,
+        userfile: null
+
       },
       isEditFormActive: false,
     };
@@ -306,6 +304,7 @@ export default {
     },
     filter() {
       this.products = [];
+      this.productOffset= 0
       this.getListProduct();
     },
     numeric(val) {
@@ -335,14 +334,11 @@ export default {
       this.produkDetail = {};
       this.edit1 = {
         tname: "",
-        tsku: "",
-        tmodel: "",
-        ccur: "",
-        ccategory: 0,
-        cmanufacture: "",
-        tdesc: "",
-        tshortdesc: "",
-        tprice: 0,
+            tsku: "",
+            ccategory: 0,
+            tdesc: "",
+            tprice: null,
+            userfile: null
       };
       this.isEditFormActive = false;
     },
@@ -421,7 +417,14 @@ export default {
       return str.join("&");
     },
     updateProduct() {
+      console.log(this.edit1.userfile)
       const self = this;
+      var formData = new FormData()
+      formData.append('tsku', this.edit1.tsku);
+      formData.append('tname', this.edit1.tname);
+      formData.append('tprice', this.edit1.tprice);
+      formData.append('userfile', this.edit1.userfile);
+      formData.append('ccategory', this.edit1.ccategory);
       f7.dialog.preloader();
       let ajax;
       if (this.id) {
@@ -435,7 +438,7 @@ export default {
           }
         );
       } else {
-        ajax = axios.post(`/product/add`, this.urlEncoded(this.edit1), {
+        ajax = axios.post(`/product/add`, formData, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -455,13 +458,10 @@ export default {
           this.edit1 = {
             tname: "",
             tsku: "",
-            tmodel: "",
-            ccur: "",
             ccategory: 0,
-            cmanufacture: "",
             tdesc: "",
-            tshortdesc: "",
-            tprice: 0,
+            tprice: null,
+            userfile: null
           };
           this.isEditFormActive = false;
         })
