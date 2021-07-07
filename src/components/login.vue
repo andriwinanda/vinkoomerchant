@@ -142,7 +142,7 @@ export default {
           store.dispatch("login", token);
           axios.defaults.headers.common["X-Auth-Token"] = token;
           f7.dialog.close();
-          this.f7router.navigate("/");
+          this.f7router.back();
         })
         .catch((err) => {
           f7.toast

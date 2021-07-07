@@ -113,15 +113,29 @@
             </table>
             <br />
 
-            <f7-button fill color="primary" @click="editProduct()"
-              >Edit</f7-button
-            >
+            <f7-row>
+              <f7-col>
+                <f7-button fill color="red" @click="deleteProduct()"
+                  >Delete</f7-button
+                >
+              </f7-col>
+              <f7-col>
+                 <f7-button fill color="primary" @click="editProduct()">
+              Edit
+            </f7-button>
+              </f7-col>
+            </f7-row>
           </f7-block>
 
           <!-- ===EDIT PRODUCT=== -->
 
           <f7-block v-else>
-            <input type="file" @input="edit1.userfile = $event.target.files[0]" id="_file" accept="image/*;capture=camera" />
+            <input
+              type="file"
+              @input="edit1.userfile = $event.target.files[0]"
+              id="_file"
+              accept="image/*;capture=camera"
+            />
             <f7-list no-hairlines>
               <f7-list-input
                 label="Name"
@@ -257,8 +271,7 @@ export default {
         ccategory: 0,
         tdesc: "",
         tprice: null,
-        userfile: null
-
+        userfile: null,
       },
       isEditFormActive: false,
     };
@@ -304,8 +317,29 @@ export default {
     },
     filter() {
       this.products = [];
-      this.productOffset= 0
+      this.productOffset = 0;
       this.getListProduct();
+    },
+    deleteProduct() {
+      this.$f7.dialog.confirm(
+        `Are you sure to delete ?`,
+        () => {
+          this.$f7.dialog.preloader();
+          this.axios
+            .get(`/product/delete/${this.id}`)
+            .then(res => {
+              this.$f7.dialog.close();
+              this.$f7.dialog.alert("Delete success", "Success!");
+              this.$emit("reload", this.type);
+              this.$f7.popup.close();
+            })
+            .catch(err => {
+              this.$f7.dialog.close();
+              this.$f7.dialog.alert(err.response.data.error, "Error!");
+            });
+        },
+        this.$f7.dialog.close()
+      );
     },
     numeric(val) {
       var formatter = new Intl.NumberFormat("ID", {
@@ -334,11 +368,11 @@ export default {
       this.produkDetail = {};
       this.edit1 = {
         tname: "",
-            tsku: "",
-            ccategory: 0,
-            tdesc: "",
-            tprice: null,
-            userfile: null
+        tsku: "",
+        ccategory: 0,
+        tdesc: "",
+        tprice: null,
+        userfile: null,
       };
       this.isEditFormActive = false;
     },
@@ -417,14 +451,14 @@ export default {
       return str.join("&");
     },
     updateProduct() {
-      console.log(this.edit1.userfile)
+      console.log(this.edit1.userfile);
       const self = this;
-      var formData = new FormData()
-      formData.append('tsku', this.edit1.tsku);
-      formData.append('tname', this.edit1.tname);
-      formData.append('tprice', this.edit1.tprice);
-      formData.append('userfile', this.edit1.userfile);
-      formData.append('ccategory', this.edit1.ccategory);
+      var formData = new FormData();
+      formData.append("tsku", this.edit1.tsku);
+      formData.append("tname", this.edit1.tname);
+      formData.append("tprice", this.edit1.tprice);
+      formData.append("userfile", this.edit1.userfile);
+      formData.append("ccategory", this.edit1.ccategory);
       f7.dialog.preloader();
       let ajax;
       if (this.id) {
@@ -461,7 +495,7 @@ export default {
             ccategory: 0,
             tdesc: "",
             tprice: null,
-            userfile: null
+            userfile: null,
           };
           this.isEditFormActive = false;
         })
