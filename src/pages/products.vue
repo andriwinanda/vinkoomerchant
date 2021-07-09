@@ -31,7 +31,33 @@
         </f7-block>
       </template>
       <template v-else>
-        <div
+        <f7-list>
+          <f7-list-item v-for="product in products"
+          
+          :key="product.id" @click.prevent="getDetail(product.id)">
+          <template #media>
+        <img height="40" width="50" :src="product.image" alt="" />
+      </template>
+            <!-- <div class="row">
+                <div class="col-30">
+                  <img height="40" :src="product.image" alt="" />
+                </div>
+                <div class="col-70"> -->
+                  <p class="capitalized no-margin" color-theme="red">
+                    <strong>
+                      {{ product.name }}
+                    </strong>
+                    <br />
+                    {{ numeric(product.price) }} <br />
+                    <small v-if="product.discount">
+                      <strike>Rp 48.000</strike> &#9899; <span>50% OFF</span>
+                    </small>
+                  </p>
+                <!-- </div>
+              </div> -->
+          </f7-list-item>
+        </f7-list>
+        <!-- <div
           class="card margin-vertical-half"
           v-for="product in products"
           :key="product.id"
@@ -57,7 +83,7 @@
               </div>
             </div>
           </a>
-        </div>
+        </div> -->
       </template>
 
       <!-- Popup -->
