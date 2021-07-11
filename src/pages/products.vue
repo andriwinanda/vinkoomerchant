@@ -32,28 +32,30 @@
       </template>
       <template v-else>
         <f7-list>
-          <f7-list-item v-for="product in products"
-          
-          :key="product.id" @click.prevent="getDetail(product.id)">
-          <template #media>
-        <img height="40" width="50" :src="product.image" alt="" />
-      </template>
+          <f7-list-item
+            v-for="product in products"
+            :key="product.id"
+            @click.prevent="getDetail(product.id)"
+          >
+            <template #media>
+              <img height="40" width="50" :src="product.image" alt="" />
+            </template>
             <!-- <div class="row">
                 <div class="col-30">
                   <img height="40" :src="product.image" alt="" />
                 </div>
                 <div class="col-70"> -->
-                  <p class="capitalized no-margin" color-theme="red">
-                    <strong>
-                      {{ product.name }}
-                    </strong>
-                    <br />
-                    {{ numeric(product.price) }} <br />
-                    <small v-if="product.discount">
-                      <strike>Rp 48.000</strike> &#9899; <span>50% OFF</span>
-                    </small>
-                  </p>
-                <!-- </div>
+            <p class="capitalized no-margin" color-theme="red">
+              <strong>
+                {{ product.name }}
+              </strong>
+              <br />
+              {{ numeric(product.price) }} <br />
+              <small v-if="product.discount">
+                <strike>Rp 48.000</strike> &#9899; <span>50% OFF</span>
+              </small>
+            </p>
+            <!-- </div>
               </div> -->
           </f7-list-item>
         </f7-list>
@@ -146,9 +148,9 @@
                 >
               </f7-col>
               <f7-col>
-                 <f7-button fill color="primary" @click="editProduct()">
-              Edit
-            </f7-button>
+                <f7-button fill color="primary" @click="editProduct()">
+                  Edit
+                </f7-button>
               </f7-col>
             </f7-row>
           </f7-block>
@@ -353,13 +355,13 @@ export default {
           this.$f7.dialog.preloader();
           this.axios
             .get(`/product/delete/${this.id}`)
-            .then(res => {
+            .then((res) => {
               this.$f7.dialog.close();
               this.$f7.dialog.alert("Delete success", "Success!");
               this.$emit("reload", this.type);
               this.$f7.popup.close();
             })
-            .catch(err => {
+            .catch((err) => {
               this.$f7.dialog.close();
               this.$f7.dialog.alert(err.response.data.error, "Error!");
             });
@@ -477,7 +479,6 @@ export default {
       return str.join("&");
     },
     updateProduct() {
-      console.log(this.edit1.userfile);
       const self = this;
       var formData = new FormData();
       formData.append("tsku", this.edit1.tsku);
@@ -507,10 +508,23 @@ export default {
       ajax
         .then((res) => {
           f7.dialog.close();
-          // f7.dialog.alert("Update success", "Success!");
+          var file = new FormData();
+          file.append("userfile", this.edit1.userfile);
           this.isEditFormActive = false;
           if (this.id) {
-            this.getDetail(this.id);
+            axios
+              .post(
+                `product/update_image/${this.id}`,
+                file,
+                {
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+                }
+              )
+              .then((res) => {
+                this.getDetail(this.id);
+              });
           } else {
             f7.popup.close();
             this.id = "";
@@ -523,7 +537,6 @@ export default {
             tprice: null,
             userfile: null,
           };
-          this.isEditFormActive = false;
         })
         .catch((err) => {
           f7.dialog.close();

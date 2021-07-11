@@ -7,32 +7,35 @@
       :infinite-preloader="showPreloader"
       @infinite="loadMore"
     >
-      <div
-        class="card popup-open"
-        data-popup=".popup-detail"
-        v-for="product in products"
-        :key="product.id"
-      >
-        <div class="card-content card-content-padding">
-          <div class="row">
-            <div class="col-30">
-              <img height="50" :src="product.image" alt="" />
-            </div>
-            <div class="col-70">
-              <p class="capitalized" color-theme="red">
-                <strong>
-                  {{ product.name }}
-                </strong>
-                <br />
-                {{ numeric(product.price) }} <br />
-                <small v-if="product.discount">
-                  <strike>Rp 48.000</strike> &#9899; <span>50% OFF</span>
-                </small>
-              </p>
-            </div>
+      <template v-if="!transaction.length && !showPreloader">
+        <f7-block>
+          <p class="text-align-center" color="gray">No item</p>
+        </f7-block>
+      </template>
+      <template v-else>
+        <div
+          class="card popup-open"
+          data-popup=".popup-detail"
+          v-for="item in transaction"
+          :key="item.id"
+        >
+          <div class="card-content card-content-padding">
+            <p class="no-margin">
+              <small>{{ myDate(item.created) }}</small>
+            </p>
+            <!-- <hr class="dotted" /> -->
+            <table>
+              <tr>
+                <td></td>
+              </tr>
+            </table>
+            <p class="no-margin">
+              <span>#{{ item.code }}</span>
+              <strong class="float-right">{{ numeric(item.total) }}</strong>
+            </p>
           </div>
         </div>
-      </div>
+      </template>
 
       <div class="fab fab-right-bottom">
         <a href="#" class="popup-open" data-popup=".popup-detail">
@@ -61,6 +64,7 @@
 </template>
 <script>
 import axios from "../js/axios-helper.js";
+import moment from "moment";
 const limit = 6;
 export default {
   props: {
@@ -68,31 +72,67 @@ export default {
   },
   data() {
     return {
-      products: [],
+      transaction: [],
       searchVal: "",
       showPreloader: true,
-      productOffset: 0,
-      productRecord: 0,
+      transOffset: 0,
+      transRecord: 0,
+      // dataDumy: [
+      //   {
+      //     id: "40",
+      //     code: "127021",
+      //     event: "8",
+      //     member: "79",
+      //     dates: "2021-04-23 18:13:11",
+      //     cust: "3",
+      //     amount: "11000",
+      //     tax: "0",
+      //     cost: "0",
+      //     discount: "2000",
+      //     total: "13000",
+      //     payment_id: "5",
+      //     bank_id: null,
+      //     paid_date: null,
+      //     paid_contact: null,
+      //     due_date: "2021-04-23",
+      //     approved: "1",
+      //     cc_no: null,
+      //     cc_name: null,
+      //     cc_bank: null,
+      //     sender_name: null,
+      //     sender_acc: null,
+      //     sender_bank: null,
+      //     sender_amount: null,
+      //     log: "2751",
+      //     branch_id: "1",
+      //     cash: "1",
+      //     pos: "1",
+      //     cancel: "0",
+      //     created: "2021-04-23 18:13:11",
+      //     updated: "2021-04-23 18:13:11",
+      //     deleted: null,
+      //   },
+      // ],
     };
   },
   methods: {
-    getListProduct(val) {
+    getListTrans(val) {
       let params = {
         date: "",
         limit: limit,
-        offset: this.productOffset,
+        offset: this.transOffset,
       };
 
       axios
-        .post(`/pos/report`, params)
+        .post(`/pos`, params)
         .then((res) => {
           let data = res.data.content;
           if (data.result.length) {
             data.result.map((el) => {
-              this.products.push(el);
+              this.transaction.push(el);
             });
-          } else this.products = [];
-          this.productRecord = data.record || 0;
+          } else this.transaction = [];
+          this.transRecord = data.record || 0;
           this.showPreloader = false;
         })
         .catch((err) => {
@@ -100,14 +140,14 @@ export default {
         });
     },
     loadMore() {
-      console.log(this.productRecord);
+      console.log(this.transRecord);
       if (
         !this.showPreloader &&
-        this.productRecord &&
-        this.products.length < this.productRecord
+        this.transRecord &&
+        this.transaction.length < this.transRecord
       ) {
-        this.productOffset += limit;
-        this.getListProduct();
+        this.transOffset += limit;
+        this.getListTrans();
       }
     },
     numeric(val) {
@@ -121,9 +161,12 @@ export default {
       });
       return formatter.format(val);
     },
+    myDate(value) {
+      return moment(value).format("DD MMM YY HH:mm A");
+    },
   },
   mounted() {
-    this.getListProduct();
+    this.getListTrans();
   },
 };
 </script>
