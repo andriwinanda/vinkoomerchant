@@ -3,6 +3,7 @@ import HomePage from '../pages/home.vue';
 import Login from '../components/login.vue';
 import Products from '../pages/products.vue';
 import Transaction from '../pages/transaction.vue';
+import Order from '../pages/order.vue';
 import FormPage from '../pages/form.vue';
 
 
@@ -26,6 +27,10 @@ var routes = [
   {
     path: '/transaction',
     component: Transaction,
+  },
+  {
+    path: '/orders',
+    component: Order,
   },
 
 
