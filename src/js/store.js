@@ -25,15 +25,14 @@ const store = createStore({
     // },
     addtobag({ state }, item) {
 
-      // let index = state.bag.findIndex(el => el.sku === item.sku);
-      // if (index >= 0) {
-      //   state.bag[index].qty = item.qty
-      //   state.bag[index].stock = item.stock
-      //   state.bag[index].totalPrice = state.bag[index].price * item.qty
-      // } else {
+      let index = state.bag.findIndex(el => el.sku === item.sku);
+      if (index >= 0) {
+        state.bag[index].qty = [...state.bag, item.qty] 
+        state.bag[index].stock = [...state.bag, item.stock] 
+        // state.bag[index].totalPrice = [...state.bag, state.bag[index].price * item.qty]
+      } else {
       state.bag = [...state.bag, item];
-      // }
-      // let data = [{ "id":"770","sku": "CMH08-GLD", "name": "roller type r (roda 4 s80)", "currency": "IDR", "min": 1, "stock": 5, "qty": 5, "price": 0, "totalPrice": 0 }, {  "id":"771","sku": "KRT07-DI", "name": "door bumper (stoper handle)", "currency": "IDR", "min": "2", "stock": 100, "qty": 13, "price": 15000, "totalPrice": 195000 }, {  "id":"236","sku": "CW5012-TW", "name": "TULANG SUDUT 135", "currency": "", "min": 1, "stock": 18, "qty": 9, "price": 0, "totalPrice": 0 }]
+      }
       addToBag(JSON.stringify(state.bag))
 
     },

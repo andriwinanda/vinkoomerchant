@@ -4,6 +4,7 @@ import Login from '../components/login.vue';
 import Products from '../pages/products.vue';
 import Transaction from '../pages/transaction.vue';
 import Order from '../pages/order.vue';
+import Payment from '../pages/payment.vue';
 import FormPage from '../pages/form.vue';
 
 
@@ -31,6 +32,11 @@ var routes = [
   {
     path: '/orders',
     component: Order,
+  },
+
+  {
+    path: '/payment',
+    component: Payment,
   },
 
 

@@ -19,7 +19,14 @@ myAxios.interceptors.response.use(function (response) {
 }, function (error) {
   if (error) {
     if (!error.response || error.response.status === 500) {
-      console.log("Connection Lost!", "Please check your network connection!");
+      f7.toast
+        .create({
+          text: "Connection Lost!, Please check your network connection!",
+          position: "bottom",
+          closeTimeout: 2000,
+          destroyOnClose: true,
+        })
+        .open();
     }
     else if (error.response.status === 401) {
       // axios
@@ -30,15 +37,15 @@ myAxios.interceptors.response.use(function (response) {
       //   }).then(() => {
       //     console.log("Access Denied!", "You do not have permission for this action!");
       //   }).catch(err => {
-          // console.log(token)
-          // console.log(err.response.status)
-          // if (err.response.status === 401) {
-            store.dispatch("logout")
-            f7.views.main.router.navigate('/login');
-            // const stateObj = { foo: 'bar' };
-            // window.history.pushState(stateObj, '', '/login');
-        //   }
-        // })
+      // console.log(token)
+      // console.log(err.response.status)
+      // if (err.response.status === 401) {
+      store.dispatch("logout")
+      f7.views.main.router.navigate('/login');
+      // const stateObj = { foo: 'bar' };
+      // window.history.pushState(stateObj, '', '/login');
+      //   }
+      // })
 
     }
   }
